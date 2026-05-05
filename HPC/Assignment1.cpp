@@ -1,15 +1,7 @@
-// #include <iostream>
-// #include <vector>
-// #include <queue>
-// #include <stack>
-// #include <omp.h>
-// #include <chrono>
-// #include <iomanip>
-// #include <cstdlib>
 #include <bits/stdc++.h>
+#include <omp.h>   // ✅ REQUIRED for omp_get_wtime()
 
 using namespace std;
-using namespace chrono;
 
 class Graph
 {
@@ -149,9 +141,6 @@ public:
 /* ---------------- MAIN ---------------- */
 int main()
 {
-        cout << fixed << setprecision(4);
-
-
     int numVertices = 30000;
     int numEdges = 350000;
 
@@ -171,30 +160,26 @@ int main()
     int startVertex = 0;
 
     /* -------- BFS -------- */
-    auto start = high_resolution_clock::now();
+    double start = omp_get_wtime();
     g.sequentialBFS(startVertex);
-    auto end = high_resolution_clock::now();
-    cout << "Sequential BFS: "
-         << duration_cast<milliseconds>(end - start).count() << " ms\n";
+    double end = omp_get_wtime();
+    cout << "Sequential BFS: " << (end - start) * 1000 << " ms\n";
 
-    start = high_resolution_clock::now();
+    start = omp_get_wtime();
     g.parallelBFS(startVertex);
-    end = high_resolution_clock::now();
-    cout << "Parallel BFS: "
-         << duration_cast<milliseconds>(end - start).count() << " ms\n";
+    end = omp_get_wtime();
+    cout << "Parallel BFS: " << (end - start) * 1000 << " ms\n";
 
     /* -------- DFS -------- */
-    start = high_resolution_clock::now();
+    start = omp_get_wtime();
     g.sequentialDFS(startVertex);
-    end = high_resolution_clock::now();
-    cout << "Sequential DFS: "
-         << duration_cast<milliseconds>(end - start).count() << " ms\n";
+    end = omp_get_wtime();
+    cout << "Sequential DFS: " << (end - start) * 1000 << " ms\n";
 
-    start = high_resolution_clock::now();
+    start = omp_get_wtime();
     g.parallelDFS(startVertex);
-    end = high_resolution_clock::now();
-    cout << "Parallel DFS: "
-         << duration_cast<milliseconds>(end - start).count() << " ms\n";
+    end = omp_get_wtime();
+    cout << "Parallel DFS: " << (end - start) * 1000 << " ms\n";
 
     return 0;
 }

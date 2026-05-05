@@ -1,11 +1,9 @@
 #include <iostream>
 #include <cstdlib>
 #include <omp.h>
-#include <chrono>
 #include <iomanip>
 
 using namespace std;
-using namespace std::chrono;
 
 void bubbleSort(int arr[], int n)
 {
@@ -14,7 +12,6 @@ void bubbleSort(int arr[], int n)
             if (arr[j] > arr[j + 1])
                 swap(arr[j], arr[j + 1]);
 }
-
 
 void parallelBubble(int arr[], int n)
 {
@@ -71,7 +68,6 @@ void mergeSort(int arr[], int l, int r)
     }
 }
 
-// Parallel Merge (your logic kept)
 void parallelMerge(int arr[], int l, int r)
 {
     if (l < r)
@@ -93,45 +89,47 @@ void parallelMerge(int arr[], int l, int r)
 
 int main()
 {
-    cout << fixed << setprecision(4);
+    cout << fixed << setprecision(6);
 
     int n;
     cout << "Enter size of the array (Total elements): ";
     cin >> n;
 
-    int *arr = new int[n];        // working array
-    int *backup = new int[n];     // original copy
+    int *arr = new int[n];
+    int *backup = new int[n];
 
     for (int i = 0; i < n; i++)
         backup[i] = rand();
 
+    double start, end;
+
     // Sequential Bubble
     for (int i = 0; i < n; i++) arr[i] = backup[i];
-    auto start = high_resolution_clock::now();
+    start = omp_get_wtime();
     bubbleSort(arr, n);
-    auto end = high_resolution_clock::now();
-    double t1 = duration<double>(end - start).count();
+    end = omp_get_wtime();
+    double t1 = end - start;
 
     // Parallel Bubble
     for (int i = 0; i < n; i++) arr[i] = backup[i];
-    start = high_resolution_clock::now();
+    start = omp_get_wtime();
     parallelBubble(arr, n);
-    end = high_resolution_clock::now();
-    double t2 = duration<double>(end - start).count();
+    end = omp_get_wtime();
+    double t2 = end - start;
 
     // Sequential Merge
     for (int i = 0; i < n; i++) arr[i] = backup[i];
-    start = high_resolution_clock::now();
+    start = omp_get_wtime();
     mergeSort(arr, 0, n - 1);
-    end = high_resolution_clock::now();
-    double t3 = duration<double>(end - start).count();
+    end = omp_get_wtime();
+    double t3 = end - start;
 
     // Parallel Merge
     for (int i = 0; i < n; i++) arr[i] = backup[i];
-    start = high_resolution_clock::now();
+    start = omp_get_wtime();
     parallelMerge(arr, 0, n - 1);
-    end = high_resolution_clock::now();
-    double t4 = duration<double>(end - start).count();
+    end = omp_get_wtime();
+    double t4 = end - start;
 
     cout << "\nExecution Time:\n";
     cout << "Sequential Bubble: " << t1 << " sec\n";
