@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include <omp.h>
-// hello
+
 using namespace std;
 
 class Graph
