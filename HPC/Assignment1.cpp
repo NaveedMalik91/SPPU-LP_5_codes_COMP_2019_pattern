@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include <omp.h>   // ✅ REQUIRED for omp_get_wtime()
+#include <omp.h>
 
 using namespace std;
 
@@ -10,7 +10,11 @@ private:
     vector<vector<int>> adj;
 
 public:
-    Graph(int vertices) : numVertices(vertices), adj(vertices) {}
+    Graph(int vertices)
+    {
+        this->numVertices = vertices;
+        adj.resize(vertices);
+    }
 
     void addEdge(int u, int v)
     {
@@ -57,14 +61,14 @@ public:
             int node = q.front();
             q.pop();
 
-            #pragma omp parallel for
+#pragma omp parallel for
             for (int i = 0; i < adj[node].size(); i++)
             {
                 int neighbor = adj[node][i];
 
                 if (!visited[neighbor])
                 {
-                    #pragma omp critical
+#pragma omp critical
                     {
                         if (!visited[neighbor])
                         {
@@ -81,55 +85,48 @@ public:
     void sequentialDFS(int start)
     {
         vector<bool> visited(numVertices, false);
-        stack<int> s;
-
-        s.push(start);
-
-        while (!s.empty())
+        stack<int> st;
+        st.push(start);
+        visited[start] = true;
+        while (!st.empty())
         {
-            int node = s.top();
-            s.pop();
-
-            if (!visited[node])
+            int node = st.top();
+            st.pop();
+            for (auto neighbour : adj[node])
             {
-                visited[node] = true;
-
-                for (int neighbor : adj[node])
+                if (!visited[neighbour])
                 {
-                    if (!visited[neighbor])
-                        s.push(neighbor);
+                    visited[neighbour] = true;
+                    st.push(neighbour);
                 }
             }
         }
     }
-
     /* -------- PARALLEL DFS -------- */
     void parallelDFS(int start)
     {
+
         vector<bool> visited(numVertices, false);
-        stack<int> s;
-
+        stack<int> st;
+        st.push(start);
         visited[start] = true;
-        s.push(start);
 
-        while (!s.empty())
+        while (!st.empty())
         {
-            int node = s.top();
-            s.pop();
-
-            #pragma omp parallel for
+            int node = st.top();
+            st.pop();
+#pragma omp parallel for
             for (int i = 0; i < adj[node].size(); i++)
             {
-                int neighbor = adj[node][i];
-
-                if (!visited[neighbor])
+                int neighbour = adj[node][i];
+                if (!visited[neighbour])
                 {
-                    #pragma omp critical
+#pragma omp critical
                     {
-                        if (!visited[neighbor])
+                        if (!visited[neighbour])
                         {
-                            visited[neighbor] = true;
-                            s.push(neighbor);
+                            visited[neighbour] = true;
+                            st.push(neighbour);
                         }
                     }
                 }
