@@ -1,10 +1,11 @@
-#include <iostream>
+#include <bits/stdc++.h>
 #include <cstdlib>
 #include <omp.h>
 #include <iomanip>
 
 using namespace std;
 
+//----------------Sequential Bubble sort--------------
 void bubbleSort(int arr[], int n)
 {
     for (int i = 0; i < n - 1; ++i)
@@ -13,10 +14,13 @@ void bubbleSort(int arr[], int n)
                 swap(arr[j], arr[j + 1]);
 }
 
+//--------------Parallel Bubble sort (Even-odd index pairs compared)-------------
 void parallelBubble(int arr[], int n)
 {
     for (int i = 0; i < n; i++)
     {
+        // Even phase index
+        //e.g. (0,1),(2,3),(4,5)...
         if (i % 2 == 0)
         {
             #pragma omp parallel for
@@ -24,6 +28,9 @@ void parallelBubble(int arr[], int n)
                 if (arr[j] > arr[j + 1])
                     swap(arr[j], arr[j + 1]);
         }
+
+        //Odd phase index
+        //e.g. (1,2),(3,4),(5,6)....
         else
         {
             #pragma omp parallel for
@@ -34,29 +41,52 @@ void parallelBubble(int arr[], int n)
     }
 }
 
-void merge(int arr[], int l, int m, int r)
+
+
+
+//-------------Common merege function------------
+void mergeArray(int arr[], int left, int mid, int right)
 {
-    int n1 = m - l + 1;
-    int n2 = r - m;
+    int leftSize = mid - left + 1;
+    int rightSize = right - mid;
 
-    int *L = new int[n1];
-    int *R = new int[n2];
+    // Temporary arrays for left and right parts
+    int *leftArr = new int[leftSize];
+    int *rightArr = new int[rightSize];
 
-    for (int i = 0; i < n1; i++) L[i] = arr[l + i];
-    for (int j = 0; j < n2; j++) R[j] = arr[m + 1 + j];
+    // Copy data into temporary arrays
+    for (int i = 0; i < leftSize; i++)
+        leftArr[i] = arr[left + i];
 
-    int i = 0, j = 0, k = l;
+    for (int j = 0; j < rightSize; j++)
+        rightArr[j] = arr[mid + 1 + j];
 
-    while (i < n1 && j < n2)
-        arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
+    int i = 0;          // pointer for leftArr
+    int j = 0;          // pointer for rightArr
+    int current = left; // pointer for original array
 
-    while (i < n1) arr[k++] = L[i++];
-    while (j < n2) arr[k++] = R[j++];
+    // Merge both arrays into original array
+    while (i < leftSize && j < rightSize)
+    {
+        if (leftArr[i] <= rightArr[j])
+            arr[current++] = leftArr[i++];
+        else
+            arr[current++] = rightArr[j++];
+    }
 
-    delete[] L;
-    delete[] R;
+    //Copy remaining elements (if any)
+    while (i < leftSize)
+        arr[current++] = leftArr[i++];
+
+    while (j < rightSize)
+        arr[current++] = rightArr[j++];
+
+    delete[] leftArr;
+    delete[] rightArr;
 }
 
+
+//---------------Sequential merge sort-------------
 void mergeSort(int arr[], int l, int r)
 {
     if (l < r)
@@ -64,26 +94,31 @@ void mergeSort(int arr[], int l, int r)
         int m = (l + r) / 2;
         mergeSort(arr, l, m);
         mergeSort(arr, m + 1, r);
-        merge(arr, l, m, r);
+        mergeArray(arr, l, m, r);
     }
 }
 
-void parallelMerge(int arr[], int l, int r)
+
+//----------------Parallel merge sort----------------
+void parallelMergeSort(int arr[], int left, int right)
 {
-    if (l < r)
+    if (left < right)
     {
-        int m = (l + r) / 2;
+        int mid = (left + right) / 2;
 
         #pragma omp parallel sections
         {
+            // Thread 1 → left half
             #pragma omp section
-            parallelMerge(arr, l, m);
+            parallelMergeSort(arr, left, mid);
 
+            // Thread 2 → right half
             #pragma omp section
-            parallelMerge(arr, m + 1, r);
+            parallelMergeSort(arr, mid + 1, right);
         }
 
-        merge(arr, l, m, r);
+        // Merge after both halves are sorted
+        mergeArray(arr, left, mid, right);
     }
 }
 
@@ -127,7 +162,7 @@ int main()
     // Parallel Merge
     for (int i = 0; i < n; i++) arr[i] = backup[i];
     start = omp_get_wtime();
-    parallelMerge(arr, 0, n - 1);
+    parallelMergeSort(arr, 0, n - 1);
     end = omp_get_wtime();
     double t4 = end - start;
 
@@ -136,7 +171,8 @@ int main()
     cout << "Parallel Bubble:   " << t2 << " sec\n";
     cout << "Sequential Merge:  " << t3 << " sec\n";
     cout << "Parallel Merge:    " << t4 << " sec\n";
-
+    
+    
     delete[] arr;
     delete[] backup;
 
