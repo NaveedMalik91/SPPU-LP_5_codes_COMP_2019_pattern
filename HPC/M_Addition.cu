@@ -103,3 +103,5 @@ int main(){
     }
     cout<<endl;   
 }
+
+//command: !nvcc vectorAdd.cu -o vectorAdd ->>>> !./vectorAdd
