@@ -122,6 +122,14 @@ void parallelMergeSort(int arr[], int left, int right)
     }
 }
 
+//---------------------Print function----------------
+void print(int arr[],int n){
+    for(int i = 0;i<n;i++){
+        cout<<arr[i]<<" ";
+    }
+    cout<<endl;
+}
+
 int main()
 {
     cout << fixed << setprecision(6);
