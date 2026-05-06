@@ -97,4 +97,4 @@ int main(){
 }
 
 
-//command: !nvcc vectorAdd.cu -o vectorAdd ->>>> !./vectorAdd
+//command: !nvcc vectorAdd.cu -o vectorAdd ->>>> !./vectorAdd.cu
