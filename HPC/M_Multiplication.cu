@@ -88,9 +88,13 @@ int main(){
             cout<<h_c[i*N+j]<<" ";
         }
         cout<<endl;
+
     }
     
     cout<<"Execution time by parallel Matrix Multiplication is: "<<timeTaken.count()<<" seconds"<<endl;
     cout<<endl;
     
 }
+
+
+//command: !nvcc vectorAdd.cu -o vectorAdd ->>>> !./vectorAdd
