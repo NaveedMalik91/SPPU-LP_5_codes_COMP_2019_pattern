@@ -35,6 +35,7 @@ public:
         {
             int node = q.front();
             q.pop();
+            //cout<<node<<" "; //for printing the output
 
             for (int neighbor : adj[node])
             {
@@ -60,6 +61,7 @@ public:
         {
             int node = q.front();
             q.pop();
+            //cout<<node<<" "; //for printing the output
 
 #pragma omp parallel for
             for (int i = 0; i < adj[node].size(); i++)
@@ -92,6 +94,7 @@ public:
         {
             int node = st.top();
             st.pop();
+            //cout<<node<<" "; //for printing the output
             for (auto neighbour : adj[node])
             {
                 if (!visited[neighbour])
@@ -115,6 +118,7 @@ public:
         {
             int node = st.top();
             st.pop();
+            //cout<<node<<" "; //for printing the output
 #pragma omp parallel for
             for (int i = 0; i < adj[node].size(); i++)
             {
