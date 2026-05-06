@@ -9,12 +9,13 @@ void seq_min(int arr[], int n) {
     double start = omp_get_wtime();
 
     for (int i = 0; i < n; i++)
-        if (arr[i] < min_val) min_val = arr[i];
+        if (arr[i] < min_val)
+        min_val = arr[i];
 
     double end = omp_get_wtime();
 
     cout << "Sequential Min: " << min_val 
-         << " | Time: " << (end - start) << "\n";
+         << " | Time: " << (end - start)*1000 <<"ms"<< "\n";
 }
 
 void seq_max(int arr[], int n) {
@@ -22,12 +23,13 @@ void seq_max(int arr[], int n) {
     double start = omp_get_wtime();
 
     for (int i = 0; i < n; i++)
-        if (arr[i] > max_val) max_val = arr[i];
+        if (arr[i] > max_val)
+        max_val = arr[i];
 
     double end = omp_get_wtime();
 
-    cout << "Sequential Max: " << max_val 
-         << " | Time: " << (end - start) << "\n";
+    cout << "Sequential Max: " << max_val << " | Time: "
+    << (end - start)*1000 <<"ms"<< "\n";
 }
 
 void seq_sum(int arr[], int n) {
@@ -39,8 +41,8 @@ void seq_sum(int arr[], int n) {
 
     double end = omp_get_wtime();
 
-    cout << "Sequential Sum: " << sum 
-         << " | Time: " << (end - start) << "\n";
+    cout << "Sequential Sum: " << sum << " | Time: "
+    << (end - start)*1000 <<"ms"<< "\n";
 }
 
 void seq_avg(int arr[], int n) {
@@ -53,8 +55,8 @@ void seq_avg(int arr[], int n) {
     double avg = (double)sum / n;
     double end = omp_get_wtime();
 
-    cout << "Sequential Avg: " << avg 
-         << " | Time: " << (end - start) << "\n";
+    cout << "Sequential Avg: " << avg << " | Time: "
+    << (end - start)*1000 <<"ms"<< "\n";
 }
 
 /* ---------- PARALLEL ---------- */
@@ -65,12 +67,13 @@ void par_min(int arr[], int n) {
 
     #pragma omp parallel for reduction(min:min_val)
     for (int i = 0; i < n; i++)
-        if (arr[i] < min_val) min_val = arr[i];
+        if (arr[i] < min_val)
+        min_val = arr[i];
 
     double end = omp_get_wtime();
 
-    cout << "Parallel Min: " << min_val 
-         << " | Time: " << (end - start) << "\n";
+    cout << "Parallel Min: " << min_val << " | Time: "
+    << (end - start)*1000 <<"ms"<< "\n";
 }
 
 void par_max(int arr[], int n) {
@@ -79,12 +82,13 @@ void par_max(int arr[], int n) {
 
     #pragma omp parallel for reduction(max:max_val)
     for (int i = 0; i < n; i++)
-        if (arr[i] > max_val) max_val = arr[i];
+        if (arr[i] > max_val)
+        max_val = arr[i];
 
     double end = omp_get_wtime();
 
-    cout << "Parallel Max: " << max_val 
-         << " | Time: " << (end - start) << "\n";
+    cout << "Parallel Max: " << max_val << " | Time: "
+    << (end - start)*1000 <<"ms"<< "\n";
 }
 
 void par_sum(int arr[], int n) {
@@ -97,8 +101,8 @@ void par_sum(int arr[], int n) {
 
     double end = omp_get_wtime();
 
-    cout << "Parallel Sum: " << sum 
-         << " | Time: " << (end - start) << "\n";
+    cout << "Parallel Sum: " << sum << " | Time: "
+    << (end - start)*1000 <<"ms"<< "\n";
 }
 
 void par_avg(int arr[], int n) {
@@ -112,8 +116,8 @@ void par_avg(int arr[], int n) {
     double avg = (double)sum / n;
     double end = omp_get_wtime();
 
-    cout << "Parallel Avg: " << avg 
-         << " | Time: " << (end - start) << "\n";
+    cout << "Parallel Avg: " << avg << " | Time: "
+    << (end - start)*1000 <<"ms"<< "\n";
 }
 
 /* ---------- MAIN ---------- */
